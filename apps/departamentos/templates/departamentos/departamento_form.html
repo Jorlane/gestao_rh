@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load bootstrap %}
+
+{% block main %}
+
+    <form method="post">
+        {% csrf_token %}
+
+        {% if departamento %}
+            <h1>Editar: </h1>
+        {% else %}
+            <h1>Novo: </h1>
+        {% endif %}
+        {{ form|bootstrap }}
+        <button type="submit">Salvar</button>
+    </form>
+{% endblock %}

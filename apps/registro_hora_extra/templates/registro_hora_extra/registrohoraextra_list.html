@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block main %}
+
+    <h1>Banco de Horas: </h1>
+    <ul>
+    {% for hora_extra in object_list %}
+        {{ hora_extra.funcionario }}: {{ hora_extra.motivo }} -  {{ hora_extra.horas }} <br>
+    {% empty %}
+        <li> Sem hora extra.</li>
+    {% endfor %}
+    </ul>
+
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load bootstrap %}
+
+{% block main %}
+
+    <form method="post">
+        {% csrf_token %}
+
+        {% if funcionario %}
+            <h1>Editar: </h1>
+        {% else %}
+            <h1>Novo: </h1>
+        {% endif %}
+        {{ form|bootstrap }}
+        <button type="submit" class="btn btn-primary">Salvar</button>
+    </form>
+    <br>
+
+    <a href="{% url 'documento_create' funcionario.id %}" class="btn btn-info">Adicionar Documento</a>
+
+    <h3>Documentos:</h3>
+    {% for doc in funcionario.documento_set.all %}
+        <a href="{{ doc.arquivo.url }}">{{doc}}</a>   <br>
+    {% endfor %}
+{% endblock %}
