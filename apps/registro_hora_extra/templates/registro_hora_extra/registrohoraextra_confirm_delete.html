@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block main %}
+    <form method="post">
+        {% csrf_token %}
+        <h3>Confirma exclusão o registro ( {{ object }} ) ?</h3>
+
+        <button type="submit">Confirmar</button>
+    </form>
+{% endblock %}
