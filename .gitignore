@@ -5,3 +5,4 @@ venv
 *.pyc
 gestao_rh/__pycache__/
 media/
+gestao_rh_aws_key_pair.pem
