@@ -16,10 +16,23 @@
     </form>
     <br>
 
+    <h3>Documentos:</h3>
+    <ul>
+        {% for doc in funcionario.documento_set.all %}
+            <li><a href="{{ doc.arquivo.url }}">{{doc}}</a> </li>
+        {% endfor %}
+    </ul>
     <a href="{% url 'documento_create' funcionario.id %}" class="btn btn-info">Adicionar Documento</a>
 
-    <h3>Documentos:</h3>
-    {% for doc in funcionario.documento_set.all %}
-        <a href="{{ doc.arquivo.url }}">{{doc}}</a>   <br>
-    {% endfor %}
+    <br>
+    <br>
+    <h3>Banco de Horas:</h3>
+    <ul>
+        {% for registro_hora in funcionario.registrohoraextra_set.all %}
+            <li><a href="{% url 'hora_extra_edit' registro_hora.id %}">{{ registro_hora.motivo }} | {{ registro_hora.horas }} </a></li>
+        {% endfor %}
+    </ul>
+
+    <h5>Total de horas extras: {{ funcionario.total_horas }}</h5>
+
 {% endblock %}
