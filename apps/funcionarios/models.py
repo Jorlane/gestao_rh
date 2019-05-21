@@ -14,8 +14,8 @@ class Funcionario(models.Model):
 
     @property
     def total_horas(self):
-        total =  self.registrohoraextra_set.all().aggregate(Sum('horas'))
-        return total['horas__sum']
+        total =  self.registrohoraextra_set.filter(utilizada=False).aggregate(Sum('horas'))
+        return total['horas__sum'] or 0
 
 
     def get_absolute_url(self):

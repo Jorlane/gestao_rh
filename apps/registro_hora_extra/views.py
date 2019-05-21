@@ -1,7 +1,14 @@
+import json
+
+from django.http import HttpResponse
 from django.urls import reverse_lazy
 from django.views.generic import ListView, UpdateView, DeleteView, CreateView
+from django.views.generic.base import View
+
 from .models import RegistroHoraExtra
 from .forms import RegistroHoraExtraForm
+
+import csv
 
 class HoraExtraList(ListView):
     model = RegistroHoraExtra()
@@ -46,3 +53,49 @@ class HoraExtraCreate(CreateView):
         kwargs = super(HoraExtraCreate, self).get_form_kwargs()
         kwargs.update({'user': self.request.user})
         return kwargs
+
+class HoraExtraUtilizar(View):
+    def post(self, *args, **kwargs):
+
+        registro_hora_extra = RegistroHoraExtra.objects.get(id=kwargs['pk'])
+
+        registro_hora_extra.utilizada = True
+
+        registro_hora_extra.save()
+
+        funcionario = registro_hora_extra.funcionario
+        total = funcionario.total_horas
+
+        response = json.dumps({'mensagem': 'Hora extra marcada como utilizada', "total_horas": float(total)})
+        return HttpResponse(response, content_type='application/json')
+
+class HoraExtraDesmarcaUtilizar(View):
+    def post(self, *args, **kwargs):
+
+        registro_hora_extra = RegistroHoraExtra.objects.get(id=kwargs['pk'])
+
+        registro_hora_extra.utilizada = False
+
+        registro_hora_extra.save()
+
+        funcionario = registro_hora_extra.funcionario
+        total = funcionario.total_horas
+
+        response = json.dumps({'mensagem': 'Hora extra desmarcada como utilizada', "total_horas": float(total)})
+        return HttpResponse(response, content_type='application/json')
+
+class RelatorioHoraExtra(View):
+    def get(self, request):
+        # Create the HttpResponse object with the appropriate CSV header.
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="somefilename.csv"'
+
+        registros = RegistroHoraExtra.objects.filter(utilizada=False,funcionario__empresa=request.user.funcionario.empresa)
+
+        writer = csv.writer(response)
+        writer.writerow(['Id', 'Motivo', 'Funcionario', 'Saldo', 'Horas'])
+
+        for reg in registros:
+            writer.writerow([reg.id, reg.motivo, reg.funcionario, reg.funcionario.total_horas, reg.horas])
+
+        return response
